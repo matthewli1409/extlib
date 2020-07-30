@@ -233,6 +233,7 @@ class BFXV2:
             pandas.DataFrame -- DataFrame of positions
         """
         res = self._req(f'v2/auth/r/positions')
+        print(res.json())
         df = pd.DataFrame(res.json())
         df.rename(
             columns=dict(
