@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='api',
+setup(name='extlib',
       version='0.3',
       description='external api lib',
       url='http://github.com/matthewli1409/extlib',
