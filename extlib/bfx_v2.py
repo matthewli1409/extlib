@@ -232,13 +232,15 @@ class BFXV2:
         Returns:
             pandas.DataFrame -- DataFrame of positions
         """
-        res = self._req(f'v2/auth/r/positions')
-        print(res.json())
+        try:
+            res = self._req(f'v2/auth/r/positions')
+            res.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            return f'Error: {err}'
+
         df = pd.DataFrame(res.json())
         df.rename(
-            columns=dict(
-                zip(df.columns, ['INST', 'STATUS', 'AMOUNT', 'BASE_PRICE', 'FUNDING', 'FUNDING_TYPE', 'PNL'])),
-            inplace=True)
+            columns=dict(zip(df.columns, ['INST', 'STATUS', 'AMOUNT', 'BASE_PRICE', 'FUNDING', 'FUNDING_TYPE', 'PNL'])), inplace=True)
 
         if adjusted_pnl:
             df_tickers = self.get_trade_ticker_info()
