@@ -7,5 +7,5 @@ setup(name='extlib',
       author='Matthew Li',
       author_email='matthewli1409@gmail.com',
       license='MIT',
-      install_requires=['pandas==1.1.0', 'requests==2.23.0'],
+      install_requires=['pandas==1.1.0', 'requests==2.23.0', 'redis==3.5.3'],
       zip_safe=False)
