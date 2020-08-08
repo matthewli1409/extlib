@@ -348,3 +348,36 @@ class BFXV2:
         df_offer = df[df['AMOUNT'] < 0].copy()
         df_offer['ABS_CUMULATIVE_AMOUNT'] = abs(df_offer['AMOUNT'].cumsum())
         return df_bid, df_offer
+
+    def get_aum(self):
+        """Returns the aum of your margin account
+
+        Returns:
+            float -- how much dough you have duh
+        """
+        df_cur_pos = self.get_positions(adjusted_pnl=True)
+        df_margin_wallet = self.get_wallets('margin')
+
+        gross_aum = df_margin_wallet['USD_VAL'].sum()
+        pnl = df_cur_pos['ADJUSTED_PNL'].sum()
+        aum = gross_aum + pnl
+        return aum
+
+    def get_cur_pos(self):
+        """Returns live positions currently on margin
+
+        Returns:
+            list -- list of dictionary of positions
+        """
+        df_cur_pos = self.get_positions(adjusted_pnl=True)
+        if len(df_cur_pos.index) == 0:
+            cur_pos = {}
+        else:
+            df_cur_pos = df_cur_pos[['INST', 'AMOUNT', 'BASE_PRICE', 'FUNDING', 'ADJUSTED_PNL', 'PX_LAST']]
+            df_cur_pos.columns = map(str.lower, df_cur_pos.columns)
+            df_cur_pos.rename(columns={'amount': 'cur_lots'}, inplace=True)
+            cur_pos = df_cur_pos[['inst', 'cur_lots', 'adjusted_pnl', 'funding', 'px_last']].to_dict('records')
+
+            for inst in cur_pos:
+                inst['$_exposure'] = inst['cur_lots'] * inst['px_last']
+        return cur_pos
