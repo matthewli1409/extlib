@@ -51,7 +51,7 @@ class PriceProcessor:
             weighted_expo_std, args=[self.vol_window, self.timeframe], raw=True)
 
 
-def get_px_redis(insts, rebal_hr, sample=True, live_price=True, host='localhost', port=6379):
+def get_px_redis(insts, rebal_hr, sample=True, host='localhost', port=6379):
     """Get prices from redis
 
     Arguments:
@@ -60,7 +60,6 @@ def get_px_redis(insts, rebal_hr, sample=True, live_price=True, host='localhost'
 
     Keyword Arguments:
         sample {bool} -- True will return sample prices from redis rather than entire history (default: {True})
-        live_price {bool} -- True will get live prices from BFX to be concatenated to the price DataFrame (default: {True})
         host {string} -- Host of redis (default: {localhost})
         port {int} -- Port of redis (default: {6379})
 
@@ -72,7 +71,7 @@ def get_px_redis(insts, rebal_hr, sample=True, live_price=True, host='localhost'
     df = df[df.index.hour.isin(rebal_hr)]
     df = df[['open', 'close', 'high', 'low', 'volume', 'coin', 'timeframe']]
 
-    if live_price:
+    if sample:
         bfx = BFXV2()
         for inst in insts:
             df_price = bfx.get_candles('1h', inst, 'last')
