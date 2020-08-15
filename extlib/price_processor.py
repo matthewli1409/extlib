@@ -51,7 +51,7 @@ class PriceProcessor:
             weighted_expo_std, args=[self.vol_window, self.timeframe], raw=True)
 
 
-def get_px_redis(insts, rebal_hr, sample=True, host='localhost', port=6379):
+def get_px_hr_redis(insts, rebal_hr, sample=True, host='localhost', port=6379):
     """Get prices from redis
 
     Arguments:
@@ -66,7 +66,7 @@ def get_px_redis(insts, rebal_hr, sample=True, host='localhost', port=6379):
     Returns:
         pandas.DataFrame -- DataFrame of prices
     """
-    df = _get_px_redis(sample=sample, host=host)
+    df = _get_px_redis(sample=sample, host=host, timeframe='1h')
     df = df[df['coin'].isin(insts)]
     df = df[df.index.hour.isin(rebal_hr)]
     df = df[['open', 'close', 'high', 'low', 'volume', 'coin', 'timeframe']]
@@ -83,7 +83,7 @@ def get_px_redis(insts, rebal_hr, sample=True, host='localhost', port=6379):
     return df
 
 
-def _get_px_redis(sample=True, host='localhost', port=6379):
+def _get_px_redis(sample=True, host='localhost', port=6379, timeframe='1h'):
     """Private - Get prices from redis and return
 
     Keyword Arguments:
@@ -95,7 +95,7 @@ def _get_px_redis(sample=True, host='localhost', port=6379):
         pandas.DataFrame -- DataFrame of prices
     """
     r = redis.Redis(host=host)
-    filename = 'prices-sample' if sample else 'prices-all'
+    filename = f'prices-sample_{timeframe}' if sample else f'prices-all_{timeframe}'
     df = pd.DataFrame(json.loads(r.get(filename)))
     df['dateTime'] = pd.to_datetime(df['dateTime'], unit='ms')
     df.set_index(df['dateTime'], inplace=True)
