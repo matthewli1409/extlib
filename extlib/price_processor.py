@@ -90,6 +90,7 @@ def _get_px_redis(sample=True, host='localhost', port=6379, timeframe='1h'):
         sample {bool} -- True then csv file will be smaller - used for algo trading. Else for backtesting (default: {True})
         host {string} -- Host of redis (default: {localhost})
         port {int} -- Port of redis (default: {6379})
+        timeframe {str} -- Timeframe to pull (default: {'1h'})
 
     Returns:
         pandas.DataFrame -- DataFrame of prices

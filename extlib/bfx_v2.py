@@ -212,15 +212,16 @@ class BFXV2:
         df.rename(columns=dict(zip(df.columns, ['WALLET_TYPE', 'CURRENCY', 'BALANCE',
                                                 'UNSETTLED_INTEREST', 'BALANCE_AVAILABLE', '1', '2'])), inplace=True)
 
-        if wallet_type != 'all':
-            df = df[df['WALLET_TYPE'] == wallet_type]
+        if not df.empty:
+            if wallet_type != 'all':
+                df = df[df['WALLET_TYPE'] == wallet_type]
 
-        # Compute dollar value for the wallet
-        df_tickers = self.get_trade_ticker_info()
-        df_tickers = df_tickers[df_tickers['RLEG'] == 'USD']
-        df = df.merge(df_tickers[['LLEG', 'PX_LAST']], how='left', left_on='CURRENCY', right_on='LLEG')
-        df.loc[df['CURRENCY'] == 'USD', 'PX_LAST'] = 1
-        df['USD_VAL'] = df['BALANCE'].mul(df['PX_LAST'])
+            # Compute dollar value for the wallet
+            df_tickers = self.get_trade_ticker_info()
+            df_tickers = df_tickers[df_tickers['RLEG'] == 'USD']
+            df = df.merge(df_tickers[['LLEG', 'PX_LAST']], how='left', left_on='CURRENCY', right_on='LLEG')
+            df.loc[df['CURRENCY'] == 'USD', 'PX_LAST'] = 1
+            df['USD_VAL'] = df['BALANCE'].mul(df['PX_LAST'])
         return df
 
     def get_positions(self, adjusted_pnl=False):
@@ -239,13 +240,15 @@ class BFXV2:
             return f'Error: {err}'
 
         df = pd.DataFrame(res.json())
-        df.rename(
-            columns=dict(zip(df.columns, ['INST', 'STATUS', 'AMOUNT', 'BASE_PRICE', 'FUNDING', 'FUNDING_TYPE', 'PNL'])), inplace=True)
 
-        if adjusted_pnl:
-            df_tickers = self.get_trade_ticker_info()
-            df = pd.merge(df, df_tickers[['SYMBOL', 'PX_LAST']], how='left', left_on='INST', right_on='SYMBOL')
-            df['ADJUSTED_PNL'] = (df['PX_LAST'] - df['BASE_PRICE']) * df['AMOUNT']
+        if not df.empty:
+            df.rename(
+                columns=dict(zip(df.columns, ['INST', 'STATUS', 'AMOUNT', 'BASE_PRICE', 'FUNDING', 'FUNDING_TYPE', 'PNL'])), inplace=True)
+
+            if adjusted_pnl:
+                df_tickers = self.get_trade_ticker_info()
+                df = pd.merge(df, df_tickers[['SYMBOL', 'PX_LAST']], how='left', left_on='INST', right_on='SYMBOL')
+                df['ADJUSTED_PNL'] = (df['PX_LAST'] - df['BASE_PRICE']) * df['AMOUNT']
 
         return df
 
@@ -268,10 +271,12 @@ class BFXV2:
         res = self._req(f'v2/auth/r/ledgers/{ccy}/hist', params=params)
 
         df = pd.DataFrame(res.json())
-        df.rename(
-            columns=dict(zip(df.columns, ['ID', 'CCY', '', 'TS', '', 'AMOUNT', 'BALANCE', '', 'DESC'])),
-            inplace=True)
-        df['TS'] = pd.to_datetime(df['TS'], unit='ms')
+
+        if not df.empty:
+            df.rename(
+                columns=dict(zip(df.columns, ['ID', 'CCY', '', 'TS', '', 'AMOUNT', 'BALANCE', '', 'DESC'])),
+                inplace=True)
+            df['TS'] = pd.to_datetime(df['TS'], unit='ms')
         return df
 
     def get_trades(self, start, end, limit=1000, sort=-1):
