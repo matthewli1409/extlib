@@ -47,9 +47,9 @@ def perf_per_month(df):
     """
     df = df.to_frame()
     df.index = pd.to_datetime(df.index, format="%Y-%m-%d %H:%M:%S")
-    df['EOM'] = df.index + MonthEnd(0)
-    df.drop_duplicates('EOM', keep='last', inplace=True)
-    df = df.loc[df.index == df['EOM']]
-    df['M_RETS'] = df['NAV'] / df['NAV'].shift(1) - 1
-    df.drop(columns=['EOM', 'NAV'], inplace=True)
+    df['eom'] = df.index + MonthEnd(0)
+    df.drop_duplicates('eom', keep='last', inplace=True)
+    df = df.loc[df.index == df['eom']]
+    df['m_rets'] = df['nav'] / df['nav'].shift(1) - 1
+    df.drop(columns=['eom', 'nav'], inplace=True)
     return df.to_json(orient='index')
