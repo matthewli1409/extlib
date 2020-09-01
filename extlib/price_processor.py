@@ -79,7 +79,7 @@ def get_px_hr_redis(insts, rebal_hr, sample=True, host='localhost', port=6379):
             df_price['coin'] = inst
             df_price.columns = map(str.lower, df_price.columns)
             df_price.set_index('ts', inplace=True)
-        return pd.concat([df, df_price], sort=True)
+            df = pd.concat([df, df_price], sort=True)
     return df
 
 
