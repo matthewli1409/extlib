@@ -4,12 +4,21 @@ import pandas as pd
 from pandas.tseries.offsets import MonthEnd
 
 
-def annualised_return(tot_ret, days):
-    return (1 + tot_ret) ** (365 / days) - 1
+def get_tf_multiplier():
+    """Returns timeframe multiplier"""
+    return {'1D': 1, '4H': 6, '1H': 24}
 
 
-def annualised_vol(df_rets, dt_start, dt_end):
-    return df_rets.loc[dt_start: dt_end].std() * math.sqrt(365)
+def annualised_return(tot_ret, periods, timeframe='1D'):
+    """Returns annualised returns"""
+    tf_multiplier = get_tf_multiplier()
+    return (1 + tot_ret) ** ((365 * tf_multiplier.get(timeframe)) / periods) - 1
+
+
+def annualised_vol(df_rets, dt_start, dt_end, timeframe='1D'):
+    """Returns annualised vol"""
+    tf_multiplier = get_tf_multiplier()
+    return df_rets.loc[dt_start: dt_end].std() * math.sqrt(365 * tf_multiplier.get(timeframe))
 
 
 def sharpe_ratio(ann_ret, ann_vol):
