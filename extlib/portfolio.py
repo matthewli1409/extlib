@@ -62,3 +62,35 @@ def perf_per_month(df):
     df['m_rets'] = df['nav'] / df['nav'].shift(1) - 1
     df.drop(columns=['eom', 'nav'], inplace=True)
     return df.to_json(orient='index')
+
+
+def get_daily_stats(df):
+    """Returns daily stats of strategy
+
+    Arguments:
+        df {pandas.Series} -- Series of NAV with datetime as the index
+
+    Returns:
+        dict -- dictionary of daily stats
+    """
+    df = df.to_frame()
+    df.index = pd.to_datetime(df.index, format="%Y-%m-%d %H:%M:%S").date
+    df = df[~df.index.duplicated(keep='last')]
+    df['nav_diff'] = df['nav'] - df['nav'].shift(1)
+
+    no_updays = len(df[df['nav_diff'] > 0])
+    no_downdays = len(df[df['nav_diff'] < 0])
+    win_loss_day_ratio = no_updays / no_downdays
+    ave_updays = df[df['nav_diff'] > 0]['nav_diff'].mean()
+    ave_downdays = df[df['nav_diff'] < 0]['nav_diff'].mean()
+    max_upday = df[df['nav_diff'] > 0]['nav_diff'].max()
+    max_downday = df[df['nav_diff'] < 0]['nav_diff'].min()
+
+    return {'no_updays': no_updays,
+            'no_downdays': no_downdays,
+            'win_loss_day_ratio': win_loss_day_ratio,
+            'ave_updays': ave_updays,
+            'ave_downdays': ave_downdays,
+            'max_upday': max_upday,
+            'max_downday': max_downday,
+            }
