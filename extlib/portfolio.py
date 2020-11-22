@@ -55,7 +55,7 @@ def perf_per_month(df):
         json -- Monthly returns and datetime as the index
     """
     df = df.to_frame()
-    df.index = pd.to_datetime(df.index, format="%Y-%m-%d %H:%M:%S")
+    df.index = pd.to_datetime(df.index, format="%Y-%m-%d %H:%M:%S").date
     df['eom'] = df.index + MonthEnd(0)
     df.drop_duplicates('eom', keep='last', inplace=True)
     df = df.loc[df.index == df['eom']]
