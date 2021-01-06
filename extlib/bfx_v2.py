@@ -297,10 +297,13 @@ class BFXV2:
         res = self._req(f"v2/auth/r/trades/hist", params=params)
 
         df = pd.DataFrame(res.json())
-        df.rename(columns=dict(zip(df.columns, ['ID', 'PAIR', 'TS', 'ORDER_ID', 'AMOUNT',
-                                                'PRICE', 'TYPE', 'ORDER_PRICE', 'MAKER', 'FEE', 'FEE_CCY'])), inplace=True)
-        df['TS'] = pd.to_datetime(df['TS'], unit='ms')
-        return df
+        if not df.empty:
+            df.rename(columns=dict(zip(df.columns, ['ID', 'PAIR', 'TS', 'ORDER_ID', 'AMOUNT',
+                                                    'PRICE', 'TYPE', 'ORDER_PRICE', 'MAKER', 'FEE', 'FEE_CCY'])), inplace=True)
+            df['TS'] = pd.to_datetime(df['TS'], unit='ms')
+            return df
+        else:
+            return pd.DataFrame()
 
     def get_margin_config(self):
         """Get margin config from BFX
