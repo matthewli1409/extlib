@@ -24,11 +24,17 @@ class PriceProcessor:
         self.insts = insts
         self.timeframe = timeframe
         self.vol_window = vol_window
+        self.df_open = pd.DataFrame()
+        self.df_high = pd.DataFrame()
+        self.df_low = pd.DataFrame()
         self.df_close = pd.DataFrame()
         self.df_exp_std = pd.DataFrame()
         self.df_rets = pd.DataFrame()
         self.df_std = pd.DataFrame()
         self.df_prices = df_prices
+        self.process_open()
+        self.process_high()
+        self.process_low()
         self.process_close()
         self.process_returns()
         self.process_std()
@@ -39,6 +45,27 @@ class PriceProcessor:
             _df = self.df_prices[self.df_prices['coin'] == inst]['close'].rename(inst)
             self.df_close = pd.concat([self.df_close, _df], axis=1, sort=True)
             self.df_close.interpolate(inplace=True)
+
+    def process_high(self):
+        """Process high prices"""
+        for inst in self.insts:
+            _df = self.df_prices[self.df_prices['coin'] == inst]['high'].rename(inst)
+            self.df_high = pd.concat([self.df_high, _df], axis=1, sort=True)
+            self.df_high.interpolate(inplace=True)
+
+    def process_low(self):
+        """Process low prices"""
+        for inst in self.insts:
+            _df = self.df_prices[self.df_prices['coin'] == inst]['low'].rename(inst)
+            self.df_low = pd.concat([self.df_low, _df], axis=1, sort=True)
+            self.df_low.interpolate(inplace=True)
+
+    def process_open(self):
+        """Process open prices"""
+        for inst in self.insts:
+            _df = self.df_prices[self.df_prices['coin'] == inst]['open'].rename(inst)
+            self.df_open = pd.concat([self.df_open, _df], axis=1, sort=True)
+            self.df_open.interpolate(inplace=True)
 
     def process_returns(self):
         """Process returns"""
