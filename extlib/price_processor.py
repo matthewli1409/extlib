@@ -10,27 +10,36 @@ from extlib.bfx_v2 import BFXV2
 
 class PriceProcessor:
 
-    def __init__(self, insts, df_prices, vol_window, timeframe='1D'):
+    def __init__(self, insts, df_prices, vol_window, rebal_hr, timeframe='1D', hr_offset=0):
         """Process price data into standard DataFrame formats
+
+        Notes:
+            Currently only take in hourly data to be process.
+            More granular data will require code adjustments
 
         Arguments:
             insts {list} -- All instruments used for analysis
             df_prices {pandas.DataFrame} -- DataFrame of prices
             vol_window {int} -- Volatility window
+            rebal_hr {list} -- List of rebalancing hours [0, 4, 8, 12...]
 
         Keyword Arguments:
             timeframe {str} -- '1D', '4H', '1H' etc. (default: {'1D'})
+            hr_offset {int} -- 4 hour intervals will start 0, 4, 8...
+                                1 here will offset to 1, 5, 9 (default: {0})
         """
         self.insts = insts
         self.timeframe = timeframe
         self.vol_window = vol_window
+        self.rebal_hr = rebal_hr
+        self.origin = f'2000-01-01 0{hr_offset}:00:00'
         self.df_open = pd.DataFrame()
         self.df_high = pd.DataFrame()
         self.df_low = pd.DataFrame()
         self.df_close = pd.DataFrame()
-        self.df_exp_std = pd.DataFrame()
         self.df_rets = pd.DataFrame()
         self.df_std = pd.DataFrame()
+        self.df_exp_std = pd.DataFrame()
         self.df_prices = df_prices
         self.process_open()
         self.process_high()
@@ -43,13 +52,23 @@ class PriceProcessor:
         """Process closing prices"""
         for inst in self.insts:
             _df = self.df_prices[self.df_prices['coin'] == inst]['close'].rename(inst)
+            _df = _df.resample(self.timeframe, label='left', origin=self.origin).agg('last')
             self.df_close = pd.concat([self.df_close, _df], axis=1, sort=True)
             self.df_close.interpolate(inplace=True)
+
+    def process_open(self):
+        """Process open prices"""
+        for inst in self.insts:
+            _df = self.df_prices[self.df_prices['coin'] == inst]['open'].rename(inst)
+            _df = _df.resample(self.timeframe, label='left', origin=self.origin).agg('first')
+            self.df_open = pd.concat([self.df_open, _df], axis=1, sort=True)
+            self.df_open.interpolate(inplace=True)
 
     def process_high(self):
         """Process high prices"""
         for inst in self.insts:
             _df = self.df_prices[self.df_prices['coin'] == inst]['high'].rename(inst)
+            _df = _df.resample(self.timeframe, label='left', origin=self.origin).agg('max')
             self.df_high = pd.concat([self.df_high, _df], axis=1, sort=True)
             self.df_high.interpolate(inplace=True)
 
@@ -57,15 +76,9 @@ class PriceProcessor:
         """Process low prices"""
         for inst in self.insts:
             _df = self.df_prices[self.df_prices['coin'] == inst]['low'].rename(inst)
+            _df = _df.resample(self.timeframe, label='left', origin=self.origin).agg('min')
             self.df_low = pd.concat([self.df_low, _df], axis=1, sort=True)
             self.df_low.interpolate(inplace=True)
-
-    def process_open(self):
-        """Process open prices"""
-        for inst in self.insts:
-            _df = self.df_prices[self.df_prices['coin'] == inst]['open'].rename(inst)
-            self.df_open = pd.concat([self.df_open, _df], axis=1, sort=True)
-            self.df_open.interpolate(inplace=True)
 
     def process_returns(self):
         """Process returns"""
@@ -78,12 +91,11 @@ class PriceProcessor:
             weighted_expo_std, args=[self.vol_window, self.timeframe], raw=True)
 
 
-def get_px_hr_redis(insts, rebal_hr, sample=True, host='localhost', port=6379):
+def get_px_hr_redis(insts, sample=True, host='localhost', port=6379):
     """Get prices from redis
 
     Arguments:
         insts {list} -- List of instruments to be read from csv
-        rebal_hr {list} -- Rebalance hour to filter data for
 
     Keyword Arguments:
         sample {bool} -- True will return sample prices from redis rather than entire history (default: {True})
@@ -95,7 +107,6 @@ def get_px_hr_redis(insts, rebal_hr, sample=True, host='localhost', port=6379):
     """
     df = _get_px_redis(sample=sample, host=host, timeframe='1h')
     df = df[df['coin'].isin(insts)]
-    df = df[df.index.hour.isin(rebal_hr)]
     df = df[['open', 'close', 'high', 'low', 'volume', 'coin', 'timeframe']]
 
     if sample:
