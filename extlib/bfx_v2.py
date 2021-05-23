@@ -9,7 +9,6 @@ import requests
 
 
 class BFXV2:
-
     def __init__(self, key=None, secret=None):
         """BFX V2 REST Public and Authenticated endpoints
 
