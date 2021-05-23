@@ -1,5 +1,6 @@
-import pymongo
 import os
+
+import pymongo
 
 
 def get_mongo_client():
