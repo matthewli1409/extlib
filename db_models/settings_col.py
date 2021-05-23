@@ -1,5 +1,6 @@
 from .connect_ryo import get_mongo_client
 
+from ..log.log import logger
 
 def get_strat_info_db(strat):
     """Get strat information
@@ -24,6 +25,7 @@ def get_last_run(strat):
         datetime.datetime -- datetime of the last time the strat was ran
     """
     strat_info = get_strat_info_db(strat)
+    logger.info('blahhhhh')
     return strat_info.get('lastRun')
 
 

@@ -2,7 +2,7 @@ import pandas as pd
 from pymongo.errors import DuplicateKeyError, BulkWriteError
 
 from log.log import errorslogger, logger
-# from k2DB import get_mongo_client
+from .connect_ryo import get_mongo_client
 
 
 def model_perf_db(df, strat, save_all_data=False):
@@ -47,8 +47,8 @@ def model_perf_db(df, strat, save_all_data=False):
         logger.info(f'Completed saving {strat} performance to db - partial data')
 
 
-def delete_all_model_perf_db():
+def delete_all_model_perf_db(strat):
     """Delete all data in modelperf collection"""
     mongo_client = get_mongo_client()
     col = mongo_client['modelperf']
-    col.delete_many({'strat': STRAT_NAME})
+    col.delete_many({'strat': strat})
