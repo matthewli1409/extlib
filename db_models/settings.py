@@ -1,18 +1,7 @@
 import os
 
-import pymongo
-
 from config.settings import MONGODB_DB, STRAT_NAME
 
-
-def get_mongo_client():
-    """Get correct mongo client
-
-    Returns:
-        pymongo.database.Database -- client that points to db
-    """
-    mongo_client = pymongo.MongoClient(os.environ['MONGODB_CLIENT'])
-    return mongo_client[MONGODB_DB]
 
 
 def get_strat_info_db(strat, mongo_client=None):
