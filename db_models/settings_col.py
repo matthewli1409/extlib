@@ -1,4 +1,4 @@
-from db_models.log.log import logger
+from log.log import logger
 from .connect_ryo import get_mongo_client
 
 
