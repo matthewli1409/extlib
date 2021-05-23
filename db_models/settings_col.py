@@ -1,4 +1,4 @@
-from main import ConnectMongoDB
+from k2DB import ConnectMongoDB
 
 
 class DBSettings(ConnectMongoDB):

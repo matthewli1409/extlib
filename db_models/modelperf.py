@@ -2,7 +2,7 @@ import pandas as pd
 from pymongo.errors import DuplicateKeyError, BulkWriteError
 
 from log.log import errorslogger, logger
-from main import get_mongo_client
+from k2DB import get_mongo_client
 
 
 def model_perf_db(df, strat, save_all_data=False):
