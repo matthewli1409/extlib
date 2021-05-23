@@ -12,7 +12,7 @@ logger.setLevel(logging.DEBUG)
 s_handler = logging.StreamHandler()
 s_handler.setLevel(logging.DEBUG)
 
-f_handler = logging.FileHandler(os.path.join(APP_ROOT_PATH, '..', 'log', 'log.log'))
+f_handler = logging.FileHandler(os.path.join(APP_ROOT_PATH, '../..', 'log', 'log.log'))
 f_handler.setLevel(logging.DEBUG)
 
 s_format = logging.Formatter('%(asctime)s - %(message)s', '%Y-%m-%d %H:%M:%S')
@@ -26,7 +26,7 @@ logger.addHandler(f_handler)
 
 errorslogger = logging.getLogger('errorslogger')
 errorslogger.propagate = False
-errorshandler = logging.FileHandler(os.path.join(APP_ROOT_PATH, '..', 'log', 'errors.log'))
+errorshandler = logging.FileHandler(os.path.join(APP_ROOT_PATH, '../..', 'log', 'errors.log'))
 f_format = logging.Formatter('%(asctime)s %(levelname)s -: %(module)s.%(funcName)s -: %(message)s', '%Y-%m-%d %H:%M:%S')
 errorshandler.setFormatter(f_format)
 errorslogger.addHandler(errorshandler)

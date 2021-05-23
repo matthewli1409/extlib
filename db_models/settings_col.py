@@ -1,6 +1,6 @@
+from db_models.log.log import logger
 from .connect_ryo import get_mongo_client
 
-from ..log.log import logger
 
 def get_strat_info_db(strat):
     """Get strat information

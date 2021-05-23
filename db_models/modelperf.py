@@ -1,7 +1,7 @@
 import pandas as pd
 from pymongo.errors import DuplicateKeyError, BulkWriteError
 
-from log.log import errorslogger, logger
+from db_models.log.log import errorslogger, logger
 from .connect_ryo import get_mongo_client
 
 
