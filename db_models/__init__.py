@@ -1,2 +1,2 @@
-from .k2DB import ConnectMongoDB
+from .connect_ryo import ConnectMongoDB
 from .settings_col import SettingsCol
