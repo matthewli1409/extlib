@@ -1,6 +1,3 @@
-from k2DB import ConnectMongoDB
-
-
 class SettingsCol(ConnectMongoDB):
     def __init__(self, db, client, strat):
         super().__init__(db, client)
