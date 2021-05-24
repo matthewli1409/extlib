@@ -8,7 +8,7 @@ else:
     REDIS_HOST = 'redis-cluster-ip-service'
 
 MONGO_CLIENT = os.environ['MONGODB_CLIENT']
-MONGO_DB = os.environ['MONGO_DB']
+MONGO_DB = os.environ['RYO_DB']
 REDIS_PORT = 6379
 REDIS_LOG_LIST = 'RYO_LOG_LIST'
 SLACK_KEY = os.environ['SLACK_KEY']
