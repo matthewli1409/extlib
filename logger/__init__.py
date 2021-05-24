@@ -1,1 +1,1 @@
-from .logger import log_msg
+from .logger import log_generic_msg, log_error_msg

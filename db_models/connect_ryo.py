@@ -10,4 +10,4 @@ def get_mongo_client():
         pymongo.database.Database -- client that points to db
     """
     mongo_client = pymongo.MongoClient(os.environ['MONGODB_CLIENT'])
-    return mongo_client[os.environ['RYO_DB']]
+    return mongo_client[os.environ['MONGO_DB']]
