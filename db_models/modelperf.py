@@ -1,6 +1,7 @@
 import pandas as pd
 from pymongo.errors import DuplicateKeyError, BulkWriteError
 
+from logger.logger import log_generic_msg, log_error_msg
 from .connect_ryo import get_mongo_client
 
 
@@ -25,7 +26,7 @@ def model_perf_db(df, strat, save_all_data=False):
                 col.insert_one(record)
             except DuplicateKeyError as err:
                 log_error_msg(err)
-        log_info_msg(f'Completed saving {strat} performance to db - all data')
+        log_generic_msg(f'Completed saving {strat} performance to db - all data')
 
     # Find latest dateTime save in mongo and only save records after that date
     else:
@@ -43,7 +44,7 @@ def model_perf_db(df, strat, save_all_data=False):
                 col.insert_many(records)
             except BulkWriteError as bwe:
                 log_error_msg(bwe.details)
-        log_info_msg(f'Completed saving {strat} performance to db - partial data')
+        log_generic_msg(f'Completed saving {strat} performance to db - partial data')
 
 
 def delete_all_model_perf_db(strat):
