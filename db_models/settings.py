@@ -1,4 +1,3 @@
-from log.log import logger
 from .connect_ryo import get_mongo_client
 
 
@@ -18,7 +17,7 @@ def get_strat_info_db(strat):
     return list(mongo_client['settings'].find({'strategy': strat}))[0]
 
 
-def get_last_run(strat):
+def get_last_run_db(strat):
     """Get last time the strategy was ran
 
     Returns:
@@ -28,7 +27,7 @@ def get_last_run(strat):
     return strat_info.get('lastRun')
 
 
-def set_last_run(strat, dt):
+def set_last_run_db(strat, dt):
     """Get last time the strategy was ran
 
     Arguments:
