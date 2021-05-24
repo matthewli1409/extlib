@@ -1,6 +1,6 @@
 import slack
 
-from settings.settings import SLACK_KEY
+from settings import SLACK_KEY
 
 
 def send_slack_msg(msg, title, channel):

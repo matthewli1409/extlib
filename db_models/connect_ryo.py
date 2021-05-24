@@ -1,6 +1,6 @@
 import pymongo
 
-from settings.settings import MONGO_DB, MONGO_CLIENT
+from settings import MONGO_DB, MONGO_CLIENT
 
 
 def get_mongo_client():
