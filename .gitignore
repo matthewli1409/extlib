@@ -1,4 +1,4 @@
-config/settings.json
+settings/settings.json
 .DS_Store
 .idea
 *.pyc

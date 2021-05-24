@@ -2,7 +2,7 @@ import json
 
 from redis import Redis
 
-from config.settings import REDIS_HOST, REDIS_PORT, REDIS_LOG_LIST
+from settings.settings import REDIS_HOST, REDIS_PORT, REDIS_LOG_LIST
 
 
 def log_msg(log_type, data, log_lvl='INFO'):

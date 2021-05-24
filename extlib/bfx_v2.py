@@ -305,7 +305,7 @@ class BFXV2:
             return pd.DataFrame()
 
     def get_margin_config(self):
-        """Get margin config from BFX
+        """Get margin settings from BFX
 
         Returns:
             pandas.DataFrame -- DataFrame margin and risk coefficients (1 - haircut)
