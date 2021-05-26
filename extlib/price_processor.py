@@ -41,6 +41,11 @@ class PriceProcessor:
         self.df_std = pd.DataFrame()
         self.df_exp_std = pd.DataFrame()
         self.df_prices = df_prices
+
+        self.label = 'left'
+        if self.timeframe == '1D':
+            self.label = 'right'
+
         self.process_open()
         self.process_high()
         self.process_low()
@@ -52,7 +57,7 @@ class PriceProcessor:
         """Process closing prices"""
         for inst in self.insts:
             _df = self.df_prices[self.df_prices['coin'] == inst]['close'].rename(inst)
-            _df = _df.resample(self.timeframe, label='left', origin=self.origin).agg('last')
+            _df = _df.resample(self.timeframe, label=self.label, origin=self.origin).agg('last')
             self.df_close = pd.concat([self.df_close, _df], axis=1, sort=True)
             self.df_close.interpolate(inplace=True)
 
@@ -60,7 +65,7 @@ class PriceProcessor:
         """Process open prices"""
         for inst in self.insts:
             _df = self.df_prices[self.df_prices['coin'] == inst]['open'].rename(inst)
-            _df = _df.resample(self.timeframe, label='left', origin=self.origin).agg('first')
+            _df = _df.resample(self.timeframe, label=self.label, origin=self.origin).agg('first')
             self.df_open = pd.concat([self.df_open, _df], axis=1, sort=True)
             self.df_open.interpolate(inplace=True)
 
@@ -68,7 +73,7 @@ class PriceProcessor:
         """Process high prices"""
         for inst in self.insts:
             _df = self.df_prices[self.df_prices['coin'] == inst]['high'].rename(inst)
-            _df = _df.resample(self.timeframe, label='left', origin=self.origin).agg('max')
+            _df = _df.resample(self.timeframe, label=self.label, origin=self.origin).agg('max')
             self.df_high = pd.concat([self.df_high, _df], axis=1, sort=True)
             self.df_high.interpolate(inplace=True)
 
@@ -76,7 +81,7 @@ class PriceProcessor:
         """Process low prices"""
         for inst in self.insts:
             _df = self.df_prices[self.df_prices['coin'] == inst]['low'].rename(inst)
-            _df = _df.resample(self.timeframe, label='left', origin=self.origin).agg('min')
+            _df = _df.resample(self.timeframe, label=self.label, origin=self.origin).agg('min')
             self.df_low = pd.concat([self.df_low, _df], axis=1, sort=True)
             self.df_low.interpolate(inplace=True)
 
