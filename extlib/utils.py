@@ -18,7 +18,7 @@ def convert_dict_keys_from_ms_to_dt(dict_data):
     return new_dict
 
 
-def snake_to_canel(snake_str):
+def snake_to_camel(snake_str):
     """Transform snake case to camel case used in mongo
 
     Args:
