@@ -50,3 +50,16 @@ def set_last_run_db(strat, dt):
     query = {'strategy': strat}
     newvalues = {'$set': {'lastRun': dt}}
     mongo_client['settings'].update_one(query, newvalues)
+
+
+def get_haircut_db(strat_name):
+    """Get haircut from db
+
+    Arguments:
+        strat_name {str} -- strategy to get haircut for
+
+    Returns:
+        float -- haircut value from db
+    """
+    strat_info = get_strat_info_db(strat_name)
+    return strat_info.get('haircut', 0)
