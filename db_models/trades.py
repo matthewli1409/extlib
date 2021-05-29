@@ -1,9 +1,12 @@
+from datetime import datetime, timedelta
+
 import pandas as pd
 from dateutil import parser
 from pymongo.errors import BulkWriteError
 
 from logger.logger import log_error_msg
 from .connect_ryo import get_mongo_client
+from .settings import get_fund_info_db
 
 
 def get_trades_db_by_dt(strat, date_st, date_end):
@@ -51,6 +54,26 @@ def delete_trades_by_dt(strat, date_start, date_end):
     query = {"strat": strat, "dateTime": {"$gte": parser.parse(date_start), "$lte": parser.parse(date_end)}}
     x = mongo_client['trades'].delete_many(query)
     print(f'{x.deleted_count} trades deleted for {strat}')
+
+
+def delete_fund_trades(fund_name, days=1):
+    """Delete trades out of mongo
+
+    Notes:
+        Deletes all strategies from fund for the amount specified in 'days'
+
+    Arguments:
+        fund_name {str} -- self explainatory
+
+    Keyword Arguments:
+        days {int} -- 1 day to go back in history. 2 will go back 2 days to delete trades
+    """
+    end_date = datetime.utcnow().date().strftime('%Y-%m-%d')
+    start_date = (datetime.utcnow() - timedelta(days=days)).date().strftime('%Y-%m-%d')
+
+    fund_info = get_fund_info_db(fund_name)
+    for strat in fund_info.get('strategies'):
+        delete_trades_by_dt(strat, start_date, end_date)
 
 
 def trades_to_db(x, strat_name):
