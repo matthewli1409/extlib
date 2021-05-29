@@ -1,4 +1,5 @@
 import pandas as pd
+import pymongo
 from pymongo.errors import DuplicateKeyError, BulkWriteError
 
 from logger.logger import log_generic_msg, log_error_msg
@@ -59,6 +60,19 @@ def get_model_perf_db(strats):
     mongo_client = get_mongo_client()
     query = {'strat': {'$in': strats}}
     return list(mongo_client['modelperf'].find(query))
+
+
+def get_latest_modelperf_db(strat):
+    """Get latest performance from modelperf collection
+
+    Arguments:
+        strat {str} -- Strat to pull from modelperf collection
+
+    Returns:
+        list -- list of last record recorded in modelperf by strategy
+    """
+    mongo_client = get_mongo_client()
+    return list(mongo_client['modelperf'].find({'strat': strat}, sort=[('dateTime', pymongo.DESCENDING)]).limit(1))
 
 
 def delete_all_model_perf_db(strat):

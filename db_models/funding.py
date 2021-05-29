@@ -1,3 +1,4 @@
+import pandas as pd
 from pymongo.errors import BulkWriteError, DuplicateKeyError
 
 from logger.logger import log_error_msg
@@ -35,3 +36,13 @@ def delete_all_funding_documents():
     """Delete all funding documents, only use this if you know wtf you are doing"""
     mongo_client = get_mongo_client()
     mongo_client['funding'].delete_many({})
+
+
+def get_funding_db(strat):
+    """Get all funding from specific strategy
+
+    Arguments:
+        strat (str): strategy name
+    """
+    mongo_client = get_mongo_client()
+    return pd.DataFrame((list(mongo_client['funding'].find({'strat': strat}))))
