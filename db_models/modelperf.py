@@ -47,6 +47,20 @@ def model_perf_db(df, strat, save_all_data=False):
         log_generic_msg(f'Completed saving {strat} performance to db - partial data')
 
 
+def get_model_perf_db(strats):
+    """Get model performance from a list of strategies provided from modelperf collection
+
+    Arguments:
+        strats {list} -- list of strategies ['MA_BO', 'MAX_TREND']
+
+    Returns:
+        list -- list of performance from modelperf collection
+    """
+    mongo_client = get_mongo_client()
+    query = {'strat': {'$in': strats}}
+    return list(mongo_client['modelperf'].find(query))
+
+
 def delete_all_model_perf_db(strat):
     """Delete all data in modelperf collection"""
     mongo_client = get_mongo_client()

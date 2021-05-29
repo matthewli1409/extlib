@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 
 def convert_dict_keys_from_ms_to_dt(dict_data):
@@ -16,6 +16,23 @@ def convert_dict_keys_from_ms_to_dt(dict_data):
         new_key = f"{dt.year}, {dt.month}, {dt.day}"
         new_dict[new_key] = dict_data[key]
     return new_dict
+
+
+def get_benchmark_dates(cur_date):
+    """Function returns the DTD, WTD, MTD, YTD starting dates
+
+    Args:
+        cur_date {datetime} -- date to be benchmarked against
+
+    Returns:
+        DTD, WTD, MTD, YTD dates
+    """
+    dtd_start = cur_date - timedelta(days=1)
+    wtd_start = cur_date - timedelta(cur_date.weekday() + 1)
+    mtd_start = cur_date.replace(day=1) - timedelta(days=1)
+    ytd_start = cur_date.replace(month=1)
+    ytd_start = ytd_start.replace(day=1) - timedelta(days=1)
+    return dtd_start, wtd_start, mtd_start, ytd_start
 
 
 def snake_to_camel(snake_str):
