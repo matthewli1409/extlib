@@ -1,6 +1,19 @@
 from .connect_ryo import get_mongo_client
 
 
+def get_fund_info_db(fund):
+    """Get fund information
+
+    Arguments:
+        fund {str} -- fund name "MASTER_FUND"
+
+    Returns:
+        list -- list of fund information
+    """
+    mongo_client = get_mongo_client()
+    return list(mongo_client['settings'].find({'fund': fund}))[0]
+
+
 def get_strat_info_db(strat):
     """Get strat information
 
