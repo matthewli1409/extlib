@@ -31,3 +31,10 @@ def log_funding_msg(data, log_lvl='INFO'):
     r = Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
     data_to_push = json.dumps({'logType': 'FUNDING', 'logLvl': log_lvl, 'data': str(data)})
     r.lpush(REDIS_LOG_LIST, data_to_push)
+
+
+def log_stream_msg(data, log_lvl='INFO'):
+    """log helper for stream message"""
+    r = Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
+    data_to_push = json.dumps({'logType': 'STREAM', 'logLvl': log_lvl, 'data': str(data)})
+    r.lpush(REDIS_LOG_LIST, data_to_push)
