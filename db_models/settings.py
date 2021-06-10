@@ -30,6 +30,16 @@ def get_strat_info_db(strat):
     return list(mongo_client['settings'].find({'strategy': strat}))[0]
 
 
+def get_strats_db():
+    """Get strats that exist in the settings collection
+
+    Returns:
+        list -- list of documents that have key: 'STRAT_INFO'
+    """
+    mongo_client = get_mongo_client()
+    return list(mongo_client['settings'].find({'key': 'STRAT_INFO'}))
+
+
 def get_last_run_db(strat):
     """Get last time the strategy was ran
 
