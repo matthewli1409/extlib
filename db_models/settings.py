@@ -30,8 +30,8 @@ def get_strat_info_db(strat):
     return list(mongo_client['settings'].find({'strategy': strat}))[0]
 
 
-def get_strats_db():
-    """Get strats that exist in the settings collection
+def get_all_strats_db():
+    """Get all strats that exist in the settings collection
 
     Returns:
         list -- list of documents that have key: 'STRAT_INFO'
