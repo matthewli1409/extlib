@@ -63,3 +63,10 @@ def get_haircut_db(strat_name):
     """
     strat_info = get_strat_info_db(strat_name)
     return strat_info.get('haircut', 0)
+
+
+def get_public_puller_info():
+    """Get public puller instruments"""
+    mongo_client = get_mongo_client()
+    query = {'key': 'PUBLIC_PULLER'}
+    return list(mongo_client['settings'].find(query))[0]
