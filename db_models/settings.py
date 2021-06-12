@@ -14,6 +14,19 @@ def get_fund_info_db(fund):
     return list(mongo_client['settings'].find({'fund': fund}))[0]
 
 
+def get_all_fund_info_db():
+    """Get all fund information
+
+    Arguments:
+        fund {str} -- fund name "MASTER_FUND"
+
+    Returns:
+        list -- list of all fund information
+    """
+    mongo_client = get_mongo_client()
+    return list(mongo_client['settings'].find({'key': 'FUND_INFO'}))
+
+
 def get_strat_info_db(strat):
     """Get strat information
 
