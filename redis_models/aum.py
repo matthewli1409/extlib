@@ -52,6 +52,10 @@ def get_tgt_wgt_redis(strat, host, port):
     """
     r = Redis(host=host, port=port, decode_responses=True)
     data = r.hgetall(f'{strat}_tgt_wgt')
-    data['weight'] = float(data.get('weight'))
-    data['dateTime'] = datetime.datetime.strptime(data.get('dateTime'), '%Y-%m-%d %H:%M:%S')
-    return data
+
+    if data is not None:
+        data['weight'] = float(data.get('weight'))
+        data['dateTime'] = datetime.datetime.strptime(data.get('dateTime'), '%Y-%m-%d %H:%M:%S')
+        return data
+    else:
+        return {}
