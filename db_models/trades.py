@@ -90,3 +90,17 @@ def trades_to_db(x, strat_name):
     except BulkWriteError:
         msg = f'BulkWriteError occurred - saving {strat_name} funding->db'
         log_error_msg(msg)
+
+
+def get_recent_trades(days=0):
+    """Get recent trades from db
+
+    Arguments:
+        days {int} -- days to go back for in the db
+    """
+    mongo_client = get_mongo_client()
+    start_dt = datetime.utcnow() - timedelta(days=days)
+    start_dt = start_dt.replace(hour=0, minute=0, second=0)
+    query = {'dateTime': {'$gte': start_dt}}
+    res = mongo_client['trades'].find(query)
+    return pd.DataFrame(list(res))
