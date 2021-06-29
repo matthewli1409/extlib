@@ -90,5 +90,7 @@ def get_balances_eod_db(date_st, date_end, strat):
     for x in data:
         bal.append(x.get('data'))
     df_balances = pd.DataFrame(bal)
-    df_balances.sort_values('dateTime', inplace=True)
+
+    if len(df_balances.index) > 0:
+        df_balances.sort_values('dateTime', inplace=True)
     return df_balances
